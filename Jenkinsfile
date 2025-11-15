@@ -17,17 +17,13 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    sh """
-                    docker run --rm \
-                      -e SONAR_HOST_URL="${SONAR_HOST_URL}" \
-                      -e SONAR_TOKEN="${SONAR_TOKEN}" \
-                      -v "\$(pwd):/usr/src" \
-                      --network ${SONAR_NETWORK} \
-                      sonarsource/sonar-scanner-cli
-                    """
+                    bat """
+        docker run --rm -e SONAR_HOST_URL="${SONAR_HOST_URL}" -e SONAR_TOKEN="${SONAR_TOKEN}" -v "%CD%:/usr/src" --network ${SONAR_NETWORK} sonarsource/sonar-scanner-cli
+        """
                 }
             }
         }
+
     }
 }
 
