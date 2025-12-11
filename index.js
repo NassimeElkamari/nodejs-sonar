@@ -39,4 +39,13 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-module.exports = { app, addNumbers };
+function badComparison(a, b) {
+  if (a = b) {
+    return true;
+  }
+  return false;
+}
+
+module.exports = { app, addNumbers, badComparison };
+
+
