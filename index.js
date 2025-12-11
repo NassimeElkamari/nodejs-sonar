@@ -4,7 +4,6 @@ const port = 3001;
 
 let unusedVariable = 123;
 
-// Simple in-memory "DB" just for practice
 let tasks = [
   { id: 1, title: 'Learn SonarQube', done: false },
   { id: 2, title: 'Integrate with Jenkins', done: false }
@@ -12,12 +11,10 @@ let tasks = [
 
 app.use(express.json());
 
-// GET /tasks
 app.get('/tasks', (req, res) => {
   res.json(tasks);
 });
 
-// POST /tasks
 app.post('/tasks', (req, res) => {
   const { title } = req.body;
   if (!title) {
@@ -28,7 +25,6 @@ app.post('/tasks', (req, res) => {
   res.status(201).json(newTask);
 });
 
-// Simple "bad" code for SonarQube to complain about later
 function unusedFunction() {
   const a = 1;
   const b = 2;
@@ -38,12 +34,6 @@ function unusedFunction() {
 function addNumbers(a, b) {
   return a + b;
 }
-
-function addTwoNumbers(a, b) {
-  return a + b; // duplicated logic
-}
-
-const SECRET_KEY = "123456"; 
 
 
 try {
