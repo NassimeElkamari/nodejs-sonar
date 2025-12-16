@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SONAR_HOST_URL = 'http://sonarqube-server:9000'
-        SONAR_TOKEN    = 'sqa_73817cd26adf945445f16410d6c530a7cad42d2b'   // ❗better to use Jenkins credentials later
+        SONAR_TOKEN    = 'sqa_10af5d35417bce83a9dd2f997e782872df462e26'  
         SONAR_NETWORK  = 'sonarqube_sonarnet'
     }
 
@@ -23,7 +23,6 @@ pipeline {
 
         stage('Run tests with coverage') {
             steps {
-                // NODE_ENV=test so index.js doesn’t start the server
                 bat 'set NODE_ENV=test&& npm test'
             }
         }
