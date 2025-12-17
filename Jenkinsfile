@@ -27,6 +27,16 @@ pipeline {
             }
         }
 
+        stage('Semgrep SAST') {
+            steps {
+                bat '''
+                semgrep --config auto --severity ERROR --error .
+                '''
+            }
+        }
+
+
+
         stage('SonarQube Analysis') {
             steps {
                 script {
