@@ -20,6 +20,22 @@ pipeline {
             }
         }
 
+        stage('OWASP Dependency-Check (SCA)') {
+            steps {
+                bat '''
+                docker run --rm ^
+                -v "%CD%:/src" ^
+                -v "%CD%\\odc-data:/usr/share/dependency-check/data" ^
+                owasp/dependency-check:latest ^
+                --scan /src ^
+                --format "HTML" ^
+                --out /src/dependency-check-report ^
+                --enableExperimental
+                '''
+            }
+        }
+
+
         stage('Run tests with coverage') {
             steps {
                 bat 'set NODE_ENV=test&& npm test'
