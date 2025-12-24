@@ -2,15 +2,18 @@ pipeline {
     agent any
 
     environment {
-        SONAR_HOST_URL = 'http://sonarqube-server:9000'
-        SONAR_NETWORK  = 'sonarqube_sonarnet'
+        SONAR_HOST_URL = 'https://sonarcloud.io'
+        SONAR_TOKEN    = '68bcaa279bf438cdb53995948d132b89a6a6885b'
+        SONAR_ORGANIZATION = 'nassimeelkamari'
+        SONAR_PROJECT_KEY  = 'nassimeelkamari_workshop3'
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/NassimeElkamari/nodejs-sonar.git'
+                    url: 'https://github.com/NassimeElkamari/workshop2-Groupe3.git'
             }
         }
 
@@ -20,51 +23,35 @@ pipeline {
             }
         }
 
-        stage('OWASP Dependency-Check (SCA)') {
-            steps {
-                bat '''
-                docker run --rm ^
-                -v "%CD%:/src" ^
-                -v "%CD%\\odc-data:/usr/share/dependency-check/data" ^
-                owasp/dependency-check:latest ^
-                --scan /src ^
-                --format "HTML" ^
-                --out /src/dependency-check-report ^
-                --enableExperimental
-                '''
-            }
-        }
-
-
         stage('Run tests with coverage') {
             steps {
                 bat 'set NODE_ENV=test&& npm test'
             }
         }
 
-        stage('Semgrep SAST') {
+        stage('OWASP Dependency-Check') {
             steps {
-                bat '''
-                chcp 65001 >NUL
-                set PYTHONUTF8=1
-                set PYTHONIOENCODING=utf-8
-                semgrep --config auto --severity ERROR --error .
-                '''
-            }
-        }
-
-
-
-
-        stage('SonarQube Analysis') {
-            steps {
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                 bat """
-            docker run --rm -e SONAR_HOST_URL="${SONAR_HOST_URL}" -e SONAR_TOKEN="${SONAR_TOKEN}" -v "%CD%:/usr/src" --network ${SONAR_NETWORK} sonarsource/sonar-scanner-cli
-            """
-                }
+                docker run --rm ^
+                  -v "%CD%:/src" ^
+                  owasp/dependency-check ^
+                  --scan /src ^
+                  --format HTML ^
+                  --out /src/dependency-check-report
+                """
             }
         }
 
+        stage('SonarCloud Analysis') {
+            steps {
+                bat """
+                C:\\sonar-scanner\\bin\\sonar-scanner.bat ^
+                  -Dsonar.host.url=%SONAR_HOST_URL% ^
+                  -Dsonar.token=%SONAR_TOKEN% ^
+                  -Dsonar.organization=%SONAR_ORGANIZATION% ^
+                  -Dsonar.projectKey=%SONAR_PROJECT_KEY%
+                """
+            }
+        }
     }
 }
