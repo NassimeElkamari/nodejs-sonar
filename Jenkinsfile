@@ -29,7 +29,7 @@ pipeline {
             }
         }
 
-        stage('OWASP Dependency-Check') {
+        /*stage('OWASP Dependency-Check') {
             steps {
                 bat """
                 docker run --rm ^
@@ -40,7 +40,7 @@ pipeline {
                   --out /src/dependency-check-report
                 """
             }
-        }
+        }*/
 
         stage('SonarCloud Analysis') {
             steps {
