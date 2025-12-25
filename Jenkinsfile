@@ -44,14 +44,20 @@ pipeline {
 
         stage('SonarCloud Analysis') {
             steps {
-                bat """
-                C:\\sonar-scanner\\bin\\sonar-scanner.bat ^
-                  -Dsonar.host.url=%SONAR_HOST_URL% ^
-                  -Dsonar.token=%SONAR_TOKEN% ^
-                  -Dsonar.organization=%SONAR_ORGANIZATION% ^
-                  -Dsonar.projectKey=%SONAR_PROJECT_KEY%
-                """
+                script {
+                def scannerHome = tool 'SonarScanner' 
+                withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
+                    bat """
+                    "${scannerHome}\\bin\\sonar-scanner.bat" ^
+                        -Dsonar.host.url=%SONAR_HOST_URL% ^
+                        -Dsonar.token=%SONAR_TOKEN% ^
+                        -Dsonar.organization=%SONAR_ORGANIZATION% ^
+                        -Dsonar.projectKey=%SONAR_PROJECT_KEY%
+                    """
+                }
+                }
             }
-        }
+            }
+
     }
 }
